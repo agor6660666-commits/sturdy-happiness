@@ -1,0 +1,37 @@
+name: VK bulk posts
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_index:
+        description: "С какого номера начать (1-77)"
+        required: true
+        default: "1"
+      count:
+        description: "Сколько постов поставить"
+        required: true
+        default: "1"
+      interval_minutes:
+        description: "Интервал между публикациями, минут"
+        required: true
+        default: "10"
+      first_delay_minutes:
+        description: "Через сколько минут выйдет первый"
+        required: true
+        default: "3"
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Schedule VK posts
+        env:
+          VK_GROUP_TOKEN: ${{ secrets.VK_GROUP_TOKEN }}
+          START_INDEX: ${{ inputs.start_index }}
+          COUNT: ${{ inputs.count }}
+          INTERVAL_MINUTES: ${{ inputs.interval_minutes }}
+          FIRST_DELAY_MINUTES: ${{ inputs.first_delay_minutes }}
+        run: python3 scripts/vk_bulk_post.py
